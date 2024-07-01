@@ -2,6 +2,10 @@
 let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 let launchFormbtn = $('#launchForm');
+const taskTitleInputEl= $('#taskTitleInput');
+const taskDueDateInputEl = $('#taskDueDateInput');
+const taskDescriptionnputEl = $('#taskDescriptionInput');
+
 // Todo: create a function to generate a unique task id
 function generateTaskId() {
 return crypto.randomUUID();
@@ -14,12 +18,40 @@ function createTaskCard(task) {
 
 // Todo: create a function to render the task list and make cards draggable
 function renderTaskList() {
-
+for (const task of taskList){
+  console.log(task.title);
+}
 }
 
-// Todo: create a function to handle adding a new task
+// function to handle adding a new task
 function handleAddTask(event){
+  event.preventDefault();
 
+  //Read user input from form dialog 
+  const taskTitle = taskTitleInputEl.val().trim();
+  const taskDueDate = taskDueDateInputEl.val();
+  const taskDescription = taskDescriptionnputEl.val().trim();
+const taskID = generateTaskId();
+
+const newTask = {
+  title: taskTitle,
+  dueDate: taskDueDate,
+  description: taskDescription,
+  taskID: taskID
+}
+let taskList = JSON.parse(localStorage.getItem("tasks"));
+console.log(taskList)
+if (!taskList){
+  taskList = [];
+  taskList.push(newTask);
+  localStorage.setItem("tasks", JSON.stringify(taskList));
+}
+else{
+
+// taskList.push(newTask);
+localStorage.setItem("tasks", JSON.stringify(taskList));
+}
+renderTaskList
 }
 
 // Todo: create a function to handle deleting a task
@@ -41,7 +73,8 @@ $(document).ready(function () {
         width: 350,
         modal: true,
         buttons: {
-          "Add Task": handleAddTask,
+           "Add Task": handleAddTask,
+           
           Cancel: function() {
             dialog.dialog( "close" );
           }
@@ -52,9 +85,13 @@ $(document).ready(function () {
         }
       });
       $(launchFormbtn).on( "click", function() {
+        
         dialog.dialog( "open" );
+        
+       
       });
+      renderTaskList
     } );
    
-;
+  
 
